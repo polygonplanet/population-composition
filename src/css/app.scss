@@ -1,0 +1,10 @@
+.prefecture {
+  display: inline-block;
+  margin: 3px 5px;
+  width: 90px;
+  white-space: nowrap;
+
+  label {
+    cursor: pointer;
+  }
+}
