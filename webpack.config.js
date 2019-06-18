@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const AutoPrefixer = require('autoprefixer');
+const Dotenv = require('dotenv-webpack');
 
 const DEV = process.env.NODE_ENV !== 'production';
 
@@ -75,6 +76,7 @@ module.exports = {
   },
   devtool: DEV ? 'inline-source-map' : false,
   plugins: [
+    new Dotenv(),
     // consoleに出るメッセージを表示しない
     // https://stackoverflow.com/questions/42196819/disable-hide-download-the-react-devtools
     new webpack.DefinePlugin({
