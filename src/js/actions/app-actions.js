@@ -73,14 +73,8 @@ export async function getPopulationsByPref(prefCode) {
  * 都道府県チェックボックスを選択した
  *
  * @param {number} prefCode 都道府県コード
- * @param {string} prefName 都道府県名
  */
-export function addSelectedPref(prefCode, prefName) {
-  AppDispatcher.handleViewAction({
-    type: ActionTypes.ADD_SELECTED_PREFS,
-    prefCode,
-    prefName
-  });
+export function selectPref(prefCode) {
   getPopulationsByPref(prefCode);
 }
 
@@ -89,11 +83,7 @@ export function addSelectedPref(prefCode, prefName) {
  *
  * @param {number} prefCode 都道府県コード
  */
-export function removeSelectedPref(prefCode) {
-  AppDispatcher.handleViewAction({
-    type: ActionTypes.REMOVE_SELECTED_PREFS,
-    prefCode
-  });
+export function unselectPref(prefCode) {
   AppDispatcher.handleViewAction({
     type: ActionTypes.REMOVE_POPULATIONS,
     prefCode

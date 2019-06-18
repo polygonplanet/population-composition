@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
-  addSelectedPref,
-  removeSelectedPref
+  selectPref,
+  unselectPref
 } from '../actions/app-actions';
 
 export default class Prefecture extends React.Component {
@@ -13,9 +13,9 @@ export default class Prefecture extends React.Component {
   handleChange(event) {
     const checked = event.target.checked;
     if (checked) {
-      addSelectedPref(this.props.value, this.props.name);
+      selectPref(this.props.value);
     } else {
-      removeSelectedPref(this.props.value);
+      unselectPref(this.props.value);
     }
   }
 

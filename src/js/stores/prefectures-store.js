@@ -6,15 +6,6 @@ const CHANGE_EVENT = 'change';
 
 let _prefectures = [];
 let _prefNames = [];
-let _selectedPrefs = {};
-
-function addSelectedPref(prefCode, prefName) {
-  _selectedPrefs[prefCode] = prefName;
-}
-
-function removeSelectedPref(prefCode) {
-  delete _selectedPrefs[prefCode];
-}
 
 function setPrefectures(prefectures) {
   _prefectures = prefectures;
@@ -49,21 +40,11 @@ class PrefecturesStore extends EventEmitter {
         setPrefectures(action.data.result);
         this.emit(CHANGE_EVENT);
         break;
-      case ActionTypes.ADD_SELECTED_PREFS:
-        addSelectedPref(action.prefCode, action.prefName);
-        break;
-      case ActionTypes.REMOVE_SELECTED_PREFS:
-        removeSelectedPref(action.prefCode);
-        break;
     }
   }
 
   getPrefectures() {
     return _prefectures;
-  }
-
-  getSelectedPrefs() {
-    return _selectedPrefs;
   }
 
   /**
