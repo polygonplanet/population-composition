@@ -5,17 +5,27 @@ import {ActionTypes, PayloadSources} from '../constants/app-constants';
 const CHANGE_EVENT = 'change';
 
 let _prefectures = [];
-let _selectedPrefs = [];
+let _prefNames = [];
+let _selectedPrefs = {};
 
-function addSelectedPref(prefCode) {
-  _selectedPrefs.push(prefCode);
+function addSelectedPref(prefCode, prefName) {
+  _selectedPrefs[prefCode] = prefName;
 }
 
 function removeSelectedPref(prefCode) {
-  const index = _selectedPrefs.indexOf(prefCode);
-  if (index !== -1) {
-    _selectedPrefs.splice(index, 1);
-  }
+  delete _selectedPrefs[prefCode];
+}
+
+function setPrefectures(prefectures) {
+  _prefectures = prefectures;
+  _prefNames = getPrefNames(prefectures);
+}
+
+function getPrefNames(prefectures) {
+  return prefectures.reduce((memo, pref) => {
+    memo[pref.prefCode] = pref.prefName;
+    return memo;
+  }, {});
 }
 
 class PrefecturesStore extends EventEmitter {
@@ -34,17 +44,16 @@ class PrefecturesStore extends EventEmitter {
       action = payload;
     }
 
-    const {data, type} = action;
-    switch (type) {
+    switch (action.type) {
       case ActionTypes.RECEIVE_PREFECTURES:
-        _prefectures = data.result;
+        setPrefectures(action.data.result);
         this.emit(CHANGE_EVENT);
         break;
       case ActionTypes.ADD_SELECTED_PREFS:
-        addSelectedPref(data);
+        addSelectedPref(action.prefCode, action.prefName);
         break;
       case ActionTypes.REMOVE_SELECTED_PREFS:
-        removeSelectedPref(data);
+        removeSelectedPref(action.prefCode);
         break;
     }
   }
@@ -55,6 +64,30 @@ class PrefecturesStore extends EventEmitter {
 
   getSelectedPrefs() {
     return _selectedPrefs;
+  }
+
+  /**
+   * prefCodeとprefNameのキーペアを持つオブジェクトを返す
+   *
+   * @example
+   *   console.log(getPrefNames());
+   *   //  {
+   *   //    "1": "北海道",
+   *   //    "2": "青森県",
+   *   //    "3": "岩手県",
+   *   //    "4": "宮城県",
+   *   //    "5": "秋田県",
+   *   //    "6": "山形県",
+   *   //    "7": "福島県",
+   *   //    "8": "茨城県",
+   *   //    "9": "栃木県",
+   *   //    ...
+   *   //  }
+   *
+   * @return {Object} prefCode(キー)とprefName(値)のペアを持つオブジェクト
+   */
+  getPrefNames() {
+    return _prefNames;
   }
 
   addChangeListener(callback) {

@@ -34,14 +34,14 @@ export async function getPrefectures() {
  * 1980-2045年(5年毎)の人口構成データをRESASから取得
  *
  * @see https://opendata.resas-portal.go.jp/docs/api/v1/population/composition/perYear.html
+ * @param {number} prefCode 都道府県コード
  * @return {void}
  */
-export async function getPopulationComposition() {
+export async function getPopulationsByPref(prefCode) {
   try {
-    // https://stackoverflow.com/questions/35038857/setting-query-string-using-fetch-get-request
     const url = new URL('https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear');
     const params = {
-      prefCode: 2,
+      prefCode: prefCode,
       cityCode: '-'
     };
     url.search = new URLSearchParams(params);
@@ -56,11 +56,13 @@ export async function getPopulationComposition() {
     if (!data || !data.result) {
       throw new Error('Failed to get population composition');
     }
-    console.log("data", data);
 
     AppDispatcher.dispatch({
       type: ActionTypes.RECEIVE_POPULATIONS,
-      data
+      data: {
+        prefCode,
+        populations: data
+      }
     });
   } catch (error) {
     console.error(error);
@@ -71,12 +73,15 @@ export async function getPopulationComposition() {
  * 都道府県チェックボックスを選択した
  *
  * @param {number} prefCode 都道府県コード
+ * @param {string} prefName 都道府県名
  */
-export function addSelectedPref(prefCode) {
+export function addSelectedPref(prefCode, prefName) {
   AppDispatcher.handleViewAction({
     type: ActionTypes.ADD_SELECTED_PREFS,
-    prefCode
+    prefCode,
+    prefName
   });
+  getPopulationsByPref(prefCode);
 }
 
 /**
@@ -87,6 +92,10 @@ export function addSelectedPref(prefCode) {
 export function removeSelectedPref(prefCode) {
   AppDispatcher.handleViewAction({
     type: ActionTypes.REMOVE_SELECTED_PREFS,
+    prefCode
+  });
+  AppDispatcher.handleViewAction({
+    type: ActionTypes.REMOVE_POPULATIONS,
     prefCode
   });
 }

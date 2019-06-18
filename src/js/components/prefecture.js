@@ -13,7 +13,7 @@ export default class Prefecture extends React.Component {
   handleChange(event) {
     const checked = event.target.checked;
     if (checked) {
-      addSelectedPref(this.props.value);
+      addSelectedPref(this.props.value, this.props.name);
     } else {
       removeSelectedPref(this.props.value);
     }
