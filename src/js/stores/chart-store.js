@@ -5,6 +5,7 @@ import {ActionTypes, PayloadSources} from '../constants/app-constants';
 const CHANGE_EVENT = 'change';
 
 let _populations = {};
+let _isLoading = false;
 
 function addPopulations(prefCode, population) {
   _populations[prefCode] = population;
@@ -35,17 +36,39 @@ class ChartStore extends EventEmitter {
         // data[2]: 生産年齢人口
         // data[3]: 老年人口
         addPopulations(action.data.prefCode, action.data.populations.result.data[0].data);
+        _isLoading = false;
+        this._clearLoading();
         this.emit(CHANGE_EVENT);
         break;
       case ActionTypes.REMOVE_POPULATIONS:
         removePopulations(action.prefCode);
         this.emit(CHANGE_EVENT);
         break;
+      case ActionTypes.BEFORE_RECEIVE_POPULATIONS:
+        this._startLoading();
+        break;
     }
+  }
+
+  _startLoading() {
+    this._clearLoading();
+    // すぐにLoadingを出すとチラつくので2秒以上APIレスポンスがなかったら出す
+    this._loadingTimerId = setTimeout(() => {
+      _isLoading = true;
+      this.emit(CHANGE_EVENT);
+    }, 2000);
+  }
+
+  _clearLoading() {
+    clearTimeout(this._loadingTimerId);
   }
 
   getPopulations() {
     return _populations;
+  }
+
+  isLoading() {
+    return _isLoading;
   }
 
   addChangeListener(callback) {

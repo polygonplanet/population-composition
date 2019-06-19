@@ -1,11 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {hashCode, int2rgb} from '../libs/util';
+import {stringToColor} from '../libs/util';
 import ChartStore from '../stores/chart-store';
+import LoadingSpinner from './loading-spinner';
 import PrefecturesStore from '../stores/prefectures-store';
 import {
-  LineChart, Line, XAxis, YAxis,
-  CartesianGrid, Tooltip, Legend,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer
 } from 'recharts';
 
@@ -13,6 +19,7 @@ export default class Chart extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading: ChartStore.isLoading(),
       populations: ChartStore.getPopulations()
     };
     this._onChange = this._onChange.bind(this);
@@ -27,7 +34,10 @@ export default class Chart extends React.Component {
   }
 
   _onChange() {
-    this.setState({ populations: ChartStore.getPopulations() });
+    this.setState({
+      isLoading: ChartStore.isLoading(),
+      populations: ChartStore.getPopulations()
+    });
   }
 
   /**
@@ -54,7 +64,7 @@ export default class Chart extends React.Component {
     const yearsTemplate = populations[prefCodes[0]].map(item => item.year);
 
     return yearsTemplate.reduce((memo, year, i) => {
-      const item = { year };
+      const item = {};
       prefCodes.forEach(prefCode => {
         const prefName = prefNames[prefCode];
         // population: [{ "year": 1980, "value": 12817 }, { "year": 1985, "value": 12707 }, ...]
@@ -73,13 +83,14 @@ export default class Chart extends React.Component {
     const prefNames = PrefecturesStore.getPrefNames();
     return Object.keys(this.state.populations).map(prefCode => {
       const prefName = prefNames[prefCode];
-      const color = `#${int2rgb(hashCode(prefName))}`;
+      const color = stringToColor(prefName);
       return (
         <Line
           type="monotone"
           dataKey={prefName}
           stroke={color}
           key={prefCode}
+          unit="人"
         />
       );
     });
@@ -93,21 +104,24 @@ export default class Chart extends React.Component {
 
     const lines = this._getLines();
     return (
-      <ResponsiveContainer width="100%" aspect={5.0/3.0}>
-        <LineChart
-          data={chartData}
-          margin={{
-            top: 5, right: 30, left: 20, bottom: 5
-          }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="year" />
-          <YAxis />
-          <Tooltip />
-          <Legend />
-          {lines}
-        </LineChart>
-      </ResponsiveContainer>
+      <div className="chart">
+        <LoadingSpinner active={this.state.isLoading} />
+        <ResponsiveContainer width="100%" aspect={5.0/3.0}>
+          <LineChart
+            data={chartData}
+            margin={{
+              top: 5, right: 30, left: 20, bottom: 5
+            }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="year" unit="年" />
+            <YAxis unit="人" width={80} />
+            <Tooltip />
+            <Legend />
+            {lines}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     );
   }
 }

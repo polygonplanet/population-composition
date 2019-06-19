@@ -36,7 +36,7 @@ export default class Prefectures extends React.Component {
     });
 
     return (
-      <div>
+      <div className="prefectures mx-auto">
         {prefectures}
       </div>
     );

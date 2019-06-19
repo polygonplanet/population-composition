@@ -1,45 +1,28 @@
 /**
- * 文字列を32bit整数でハッシュ化する
- * ref: https://stackoverflow.com/questions/7616461/generate-a-hash-from-string-in-javascript
+ * 文字列を16進数のカラーコードに変換する
+ * ref: https://stackoverflow.com/questions/3426404/create-a-hexadecimal-colour-based-on-a-string-with-javascript
  *
  * @example
- *   console.log(hashCode('abc'))   // 96354
- *   console.log(hashCode('日本語')) // 25921943
- *   console.log(hashCode('hello')) // 99162322
+ *   console.log(stringToColor('abc'))   // "#223801"
+ *   console.log(stringToColor('日本語')) // "#93898b"
+ *   console.log(stringToColor('hello')) // "#9218a9"
  *
  * @param  {string} str 対象の文字列
- * @return {number} ハッシュ化した整数
- */
-export function hashCode(str) {
-  let hash = 0;
-  let len = str.length;
-  if (len === 0) {
-    return hash;
-  }
-
-  let ch;
-  for (let i = 0; i < len; i++) {
-    ch = str.charCodeAt(i);
-    hash = ((hash << 5) - hash) + ch;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-}
-
-/**
- * 整数をを16進数のcss用カラーコードに変換する
- *
- * @example
- *   console.log(int2rgb(0)) // "000000"
- *   console.log(int2rgb(-100)) // "ffff9c"
- *   console.log(int2rgb(327917)) // "0500ed"
- *   console.log(int2rgb(0x32342)) // "032342"
- *   console.log(int2rgb(0x123456789)) // "456789"
- *
- * @param  {number} i 対象の整数
  * @return {string} カラーコード
  */
-export function int2rgb(i) {
-  const c = (i & 0x00ffffff).toString(16);
-  return '00000'.substring(0, 6 - c.length) + c;
+export function stringToColor(str) {
+  let hash = 0;
+  let len = str.length;
+  let i;
+  for (i = 0; i < len; i++) {
+    hash = (str.charCodeAt(i) + ((hash << 5) - hash)) | 0;
+  }
+
+  let color = '#';
+  let value;
+  for (i = 0; i < 3; i++) {
+    value = (hash >> (i * 8)) & 0xdd; // 明るくなりすぎないようマスクする
+    color += ('00' + value.toString(16)).substr(-2);
+  }
+  return color;
 }

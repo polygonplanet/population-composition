@@ -1,10 +1,45 @@
-.prefecture {
-  display: inline-block;
-  margin: 3px 5px;
-  width: 90px;
-  white-space: nowrap;
+.container {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 
-  label {
-    cursor: pointer;
+  h1 {
+    margin-bottom: 2rem;
+  }
+}
+
+.prefectures {
+  max-width: 600px;
+
+  .prefecture {
+    display: inline-block;
+    margin: 3px 5px;
+    width: 90px;
+    white-space: nowrap;
+
+    label {
+      cursor: pointer;
+    }
+  }
+}
+
+.chart {
+  margin-top: 2rem;
+  position: relative;
+
+  .loading-spinner {
+    width: 100%;
+    text-align: center;
+    margin: 50px 0 50px 0;
+    display: none;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    z-index: 2;
+    width: 100px;
+    height: 32px;
+
+    &.active {
+      display: block;
+    }
   }
 }

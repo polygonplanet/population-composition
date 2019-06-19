@@ -75,6 +75,9 @@ export async function getPopulationsByPref(prefCode) {
  * @param {number} prefCode 都道府県コード
  */
 export function selectPref(prefCode) {
+  AppDispatcher.handleViewAction({
+    type: ActionTypes.BEFORE_RECEIVE_POPULATIONS
+  });
   getPopulationsByPref(prefCode);
 }
 
