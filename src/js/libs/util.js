@@ -26,6 +26,7 @@ export function stringToColor(str) {
   }
   return color;
 }
+
 /**
  * 数字を三桁桁区切りにする
  *
