@@ -25,3 +25,7 @@ $ npm run start
 ```bash
 $ npm run start:dev
 ```
+
+## Demo
+
+https://polygonplanet.github.io/population-composition/demo/
