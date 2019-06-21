@@ -4,14 +4,37 @@ import {ActionTypes, PayloadSources} from '../constants/app-constants';
 
 const CHANGE_EVENT = 'change';
 
-let _prefectures = [];
-let _prefNames = [];
+const stateData = {
+  prefectures: [],
+  prefNames: {}
+};
 
 function setPrefectures(prefectures) {
-  _prefectures = prefectures;
-  _prefNames = getPrefNames(prefectures);
+  stateData.prefectures = prefectures;
+  stateData.prefNames = getPrefNames(prefectures);
 }
 
+/**
+ * prefCodeとprefNameのキーペアを持つオブジェクトを生成
+ *
+ * @example
+ *   console.log(getPrefNames());
+ *   //  {
+ *   //    "1": "北海道",
+ *   //    "2": "青森県",
+ *   //    "3": "岩手県",
+ *   //    "4": "宮城県",
+ *   //    "5": "秋田県",
+ *   //    "6": "山形県",
+ *   //    "7": "福島県",
+ *   //    "8": "茨城県",
+ *   //    "9": "栃木県",
+ *   //    ...
+ *   //  }
+ *
+ * @param {Object} prefCode,prefNameのキーを持つ都道府県の配列
+ * @return {Object} prefCode(キー)とprefName(値)のペアを持つオブジェクト
+ */
 function getPrefNames(prefectures) {
   return prefectures.reduce((memo, pref) => {
     memo[pref.prefCode] = pref.prefName;
@@ -43,32 +66,8 @@ class PrefecturesStore extends EventEmitter {
     }
   }
 
-  getPrefectures() {
-    return _prefectures;
-  }
-
-  /**
-   * prefCodeとprefNameのキーペアを持つオブジェクトを返す
-   *
-   * @example
-   *   console.log(getPrefNames());
-   *   //  {
-   *   //    "1": "北海道",
-   *   //    "2": "青森県",
-   *   //    "3": "岩手県",
-   *   //    "4": "宮城県",
-   *   //    "5": "秋田県",
-   *   //    "6": "山形県",
-   *   //    "7": "福島県",
-   *   //    "8": "茨城県",
-   *   //    "9": "栃木県",
-   *   //    ...
-   *   //  }
-   *
-   * @return {Object} prefCode(キー)とprefName(値)のペアを持つオブジェクト
-   */
-  getPrefNames() {
-    return _prefNames;
+  getAll() {
+    return stateData;
   }
 
   addChangeListener(callback) {

@@ -4,15 +4,17 @@ import {ActionTypes, PayloadSources} from '../constants/app-constants';
 
 const CHANGE_EVENT = 'change';
 
-let _populations = {};
-let _isLoading = false;
+const stateData = {
+  populations: {},
+  isLoading: false
+};
 
 function addPopulations(prefCode, population) {
-  _populations[prefCode] = population;
+  stateData.populations[prefCode] = population;
 }
 
 function removePopulations(prefCode) {
-  delete _populations[prefCode];
+  delete stateData.populations[prefCode];
 }
 
 class ChartStore extends EventEmitter {
@@ -36,7 +38,7 @@ class ChartStore extends EventEmitter {
         // data[2]: 生産年齢人口
         // data[3]: 老年人口
         addPopulations(action.data.prefCode, action.data.populations.result.data[0].data);
-        _isLoading = false;
+        stateData.isLoading = false;
         this._clearLoading();
         this.emit(CHANGE_EVENT);
         break;
@@ -54,7 +56,7 @@ class ChartStore extends EventEmitter {
     this._clearLoading();
     // すぐにLoadingを出すとチラつくので2秒以上APIレスポンスがなかったら出す
     this._loadingTimerId = setTimeout(() => {
-      _isLoading = true;
+      stateData.isLoading = true;
       this.emit(CHANGE_EVENT);
     }, 2000);
   }
@@ -63,12 +65,8 @@ class ChartStore extends EventEmitter {
     clearTimeout(this._loadingTimerId);
   }
 
-  getPopulations() {
-    return _populations;
-  }
-
-  isLoading() {
-    return _isLoading;
+  getAll() {
+    return stateData;
   }
 
   addChangeListener(callback) {

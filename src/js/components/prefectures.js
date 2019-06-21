@@ -2,13 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PrefecturesStore from '../stores/prefectures-store';
 import Prefecture from './prefecture';
+import {clearPopulationsCache} from '../actions/app-actions';
 
 export default class Prefectures extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      prefectures: PrefecturesStore.getPrefectures()
-    };
+    this.state = PrefecturesStore.getAll();
     this._onChange = this._onChange.bind(this);
   }
 
@@ -18,10 +17,11 @@ export default class Prefectures extends React.Component {
 
   componentWillUnmount() {
     PrefecturesStore.removeChangeListener(this._onChange);
+    clearPopulationsCache();
   }
 
   _onChange() {
-    this.setState({ prefectures: PrefecturesStore.getPrefectures() });
+    this.setState(PrefecturesStore.getAll());
   }
 
   render() {
