@@ -45,7 +45,6 @@ export async function fetchPopulationsByPref(prefCode) {
       data = _populationsCache.get(prefCode);
     } else {
       const url = new URL('https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear');
-      //TODO: 複数の都道府県を選択したとき追加エリアコードを指定して複数同時に取得すべき
       const params = {
         prefCode: prefCode,
         cityCode: '-'
