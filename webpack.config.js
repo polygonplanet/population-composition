@@ -77,11 +77,6 @@ module.exports = {
   devtool: DEV ? 'inline-source-map' : false,
   plugins: [
     new Dotenv(),
-    // consoleに出るメッセージを表示しない
-    // https://stackoverflow.com/questions/42196819/disable-hide-download-the-react-devtools
-    new webpack.DefinePlugin({
-      '__REACT_DEVTOOLS_GLOBAL_HOOK__': '({ isDisabled: true })'
-    }),
     new MiniCssExtractPlugin({
       filename: 'css/app.css'
     }),
