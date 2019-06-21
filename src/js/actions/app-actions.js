@@ -8,7 +8,7 @@ import {ActionTypes} from '../constants/app-constants';
  * @see https://opendata.resas-portal.go.jp/docs/api/v1/prefectures.html
  * @return {void}
  */
-export async function getPrefectures() {
+export async function fetchPrefectures() {
   try {
     const response = await fetch('https://opendata.resas-portal.go.jp/api/v1/prefectures', {
       method: 'GET',
@@ -37,25 +37,36 @@ export async function getPrefectures() {
  * @param {number} prefCode 都道府県コード
  * @return {void}
  */
-export async function getPopulationsByPref(prefCode) {
+export async function fetchPopulationsByPref(prefCode) {
+  let data = null;
   try {
-    const url = new URL('https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear');
-    const params = {
-      prefCode: prefCode,
-      cityCode: '-'
-    };
-    url.search = new URLSearchParams(params);
+    if (_populationsCache.has(prefCode)) {
+      // キャッシュがある場合
+      data = _populationsCache.get(prefCode);
+    } else {
+      const url = new URL('https://opendata.resas-portal.go.jp/api/v1/population/composition/perYear');
+      const params = {
+        prefCode: prefCode,
+        cityCode: '-'
+      };
+      url.search = new URLSearchParams(params);
 
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'X-API-KEY': RESAS_API_KEY
-      }
-    });
-    const data = await response.json();
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'X-API-KEY': RESAS_API_KEY
+        }
+      });
+      data = await response.json();
+    }
+
     if (!data || !data.result) {
       throw new Error('Failed to get population composition');
     }
+
+    // 都道府県の人口データはそうそう変わらないと想定し、連続で都道府県チェックした場合
+    // リクエスト数が多くなるのでメモリを食わない程度をキャッシュしておく
+    addPopulationsCache(prefCode, data);
 
     AppDispatcher.dispatch({
       type: ActionTypes.RECEIVE_POPULATIONS,
@@ -69,6 +80,24 @@ export async function getPopulationsByPref(prefCode) {
   }
 }
 
+const _populationsCache = new Map();
+const _POPULATIONS_CACHE_MAX = 10;
+
+function addPopulationsCache(prefCode, data) {
+  if (_populationsCache.size > _POPULATIONS_CACHE_MAX) {
+    const first = _populationsCache.keys().next();
+    _populationsCache.delete(first.value);
+  }
+  _populationsCache.set(prefCode, data);
+}
+
+/**
+ * キャッシュした都道府県ごとの人口構成データをクリア
+ */
+export function clearPopulationsCache() {
+  _populationsCache.clear();
+}
+
 /**
  * 都道府県チェックボックスを選択した
  *
@@ -78,7 +107,7 @@ export function selectPref(prefCode) {
   AppDispatcher.handleViewAction({
     type: ActionTypes.BEFORE_RECEIVE_POPULATIONS
   });
-  getPopulationsByPref(prefCode);
+  fetchPopulationsByPref(prefCode);
 }
 
 /**

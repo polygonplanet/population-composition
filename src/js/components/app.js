@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Prefectures from './prefectures';
 import Chart from './chart';
-import {getPrefectures} from '../actions/app-actions';
+import {fetchPrefectures} from '../actions/app-actions';
 
 export default class App extends React.Component {
   constructor(props) {
@@ -10,7 +10,7 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    getPrefectures();
+    fetchPrefectures();
   }
 
   render() {
