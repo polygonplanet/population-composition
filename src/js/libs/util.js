@@ -26,3 +26,14 @@ export function stringToColor(str) {
   }
   return color;
 }
+/**
+ * 数字を三桁桁区切りにする
+ *
+ * @param {number|string} n
+ * @return {string}
+ */
+export function commafy(n) {
+  const parts = n.toString().split('.');
+  parts[0] = parts[0].replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
+  return parts.join('.');
+}
