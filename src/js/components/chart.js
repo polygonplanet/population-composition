@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {stringToColor} from '../libs/util';
+import {stringToColor, commafy} from '../libs/util';
 import ChartStore from '../stores/chart-store';
-import LoadingSpinner from './loading-spinner';
 import PrefecturesStore from '../stores/prefectures-store';
+import LoadingSpinner from './loading-spinner';
 import {
   LineChart,
   Line,
@@ -18,10 +18,7 @@ import {
 export default class Chart extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      isLoading: ChartStore.isLoading(),
-      populations: ChartStore.getPopulations()
-    };
+    this.state = ChartStore.getAll();
     this._onChange = this._onChange.bind(this);
   }
 
@@ -34,10 +31,7 @@ export default class Chart extends React.Component {
   }
 
   _onChange() {
-    this.setState({
-      isLoading: ChartStore.isLoading(),
-      populations: ChartStore.getPopulations()
-    });
+    this.setState(ChartStore.getAll());
   }
 
   /**
@@ -60,7 +54,7 @@ export default class Chart extends React.Component {
       return [];
     }
 
-    const prefNames = PrefecturesStore.getPrefNames();
+    const prefNames = PrefecturesStore.getAll().prefNames;
     const yearsTemplate = populations[prefCodes[0]].map(item => item.year);
 
     return yearsTemplate.reduce((memo, year, i) => {
@@ -79,8 +73,8 @@ export default class Chart extends React.Component {
     }, []);
   }
 
-  _getLines() {
-    const prefNames = PrefecturesStore.getPrefNames();
+  renderLines() {
+    const prefNames = PrefecturesStore.getAll().prefNames;
     return Object.keys(this.state.populations).map(prefCode => {
       const prefName = prefNames[prefCode];
       const color = stringToColor(prefName);
@@ -96,13 +90,48 @@ export default class Chart extends React.Component {
     });
   }
 
+  renderCustomTooltip({ active, payload, label }) {
+    if (!active) {
+      return null;
+    }
+
+    const populations = payload.slice();
+    // 人工が多い順にソート
+    populations.sort((a, b) => b.value - a.value);
+    const manyItems = populations.length > 10 ? 'many-items' : '';
+    const contentsClassNames = `custom-tooltip__contents ${manyItems}`;
+
+    const contents = populations.map(item => {
+      return (
+        <div className="custom-tooltip__contents__item" style={{ color: item.color }} key={item.dataKey}>
+          <div className="custom-tooltip__contents__item__name">
+            {item.name}
+          </div>
+          <div>
+            {commafy(item.value)}{item.unit}
+          </div>
+        </div>
+      );
+    });
+
+    return (
+      <div className="custom-tooltip">
+        <div className="custom-tooltip__year">
+          {label}年
+        </div>
+        <div className={contentsClassNames}>
+          {contents}
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const chartData = this._getChartData();
     if (chartData.length === 0) {
       return null;
     }
-
-    const lines = this._getLines();
+    const CustomTooltip = this.renderCustomTooltip;
     return (
       <div className="chart">
         <LoadingSpinner active={this.state.isLoading} />
@@ -116,9 +145,9 @@ export default class Chart extends React.Component {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="year" unit="年" />
             <YAxis unit="人" width={80} />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Legend />
-            {lines}
+            {this.renderLines()}
           </LineChart>
         </ResponsiveContainer>
       </div>
