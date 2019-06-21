@@ -55,8 +55,13 @@
     }
 
     &__contents {
-      &.many-items {
+      &.has-many-items {
         font-size: .8rem;
+      }
+
+      &.has-too-many-items {
+        font-size: .7rem;
+        line-height: 1.1;
       }
 
       &__item {
