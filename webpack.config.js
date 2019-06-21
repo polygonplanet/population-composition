@@ -54,10 +54,10 @@ module.exports = {
     ]
   },
   optimization: {
-    minimizer: DEV ? [
+    minimizer: DEV ? [] : [
       new OptimizeCSSAssetsPlugin(),
       new UglifyJsPlugin()
-    ] : []
+    ]
   },
   resolve: {
     modules: [
