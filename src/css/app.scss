@@ -1,16 +1,20 @@
 .container {
   margin-top: 2rem;
   margin-bottom: 2rem;
+}
+
+header {
+  margin-bottom: 3rem;
 
   h1 {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
   }
 }
 
 .prefectures {
   max-width: 600px;
 
-  .prefecture {
+  &__prefecture {
     display: inline-block;
     margin: 3px 5px;
     width: 90px;
@@ -38,7 +42,7 @@
     width: 100px;
     height: 32px;
 
-    &.active {
+    &--active {
       display: block;
     }
   }
@@ -55,11 +59,11 @@
     }
 
     &__contents {
-      &.has-many-items {
+      &--has-many-items {
         font-size: .8rem;
       }
 
-      &.has-too-many-items {
+      &--has-too-many-items {
         font-size: .7rem;
         line-height: 1.1;
       }

@@ -22,7 +22,7 @@ export default class Prefecture extends React.Component {
   render() {
     const id = `pref-${this.props.value}`;
     return (
-      <div className="custom-control custom-checkbox prefecture">
+      <div className="custom-control custom-checkbox prefectures__prefecture">
         <input
           type="checkbox"
           className="custom-control-input"

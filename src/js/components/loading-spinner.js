@@ -7,7 +7,7 @@ export default class LoadingSpinner extends React.Component {
   }
 
   render() {
-    const active = this.props.active ? 'active' : '';
+    const active = this.props.active ? 'loading-spinner--active' : '';
     return (
       <div className={`loading-spinner ${active}`}>
         <div className="spinner-grow text-secondary" role="status">

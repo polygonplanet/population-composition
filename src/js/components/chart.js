@@ -99,8 +99,8 @@ export default class Chart extends React.Component {
     // 人工が多い順にソート
     populations.sort((a, b) => b.value - a.value);
     //TODO: 選択された都道府県が多いと表示しきれなくて小さくなるので2列とかにしたい
-    const hasManyItems = populations.length > 10 ? 'has-many-items' : '';
-    const hasTooManyItems = populations.length > 25 ? 'has-too-many-items' : '';
+    const hasManyItems = populations.length > 10 ? 'custom-tooltip__contents--has-many-items' : '';
+    const hasTooManyItems = populations.length > 25 ? 'custom-tooltip__contents--has-too-many-items' : '';
     const contentsClassNames = `custom-tooltip__contents ${hasManyItems} ${hasTooManyItems}`;
 
     const contents = populations.map(item => {
