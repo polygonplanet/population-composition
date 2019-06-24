@@ -8,19 +8,14 @@ export default class Header extends React.Component {
 
   render() {
     return (
-      <header className="text-center">
-        <h1>都道府県別の人口推移</h1>
-        <p>
-          <a href="https://opendata.resas-portal.go.jp/">RESAS(地域経済分析システム)のAPI</a> を使用
-        </p>
-        {/* GitHub Ribbon */}
-        <a href="https://github.com/polygonplanet/population-composition">
-          <img
-            style={{ position: "absolute", top: 0, left: 0, border: 0 }}
-            src="https://s3.amazonaws.com/github/ribbons/forkme_left_red_aa0000.png"
-            alt="Fork me on GitHub" />
-        </a>
-      </header>
+      <nav className="navbar fixed-top flex-md-nowrap p-0 shadow nav-header">
+        <header className="nav-header__header d-flex">
+          <h1 className="nav-header__header__title">都道府県別の人口推移</h1>
+          <div className="nav-header__header__github-link ml-auto">
+            <a href="https://github.com/polygonplanet/population-composition">Source on GitHub</a>
+          </div>
+        </header>
+      </nav>
     );
   }
 }

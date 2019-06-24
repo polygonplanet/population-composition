@@ -25,20 +25,26 @@ export default class Prefectures extends React.Component {
   }
 
   render() {
-    const prefectures = this.state.prefectures.map(item => {
+    const prefectures = this.state.prefectures.map((item, i) => {
       return (
-        <Prefecture
-          name={item.prefName}
-          value={item.prefCode}
-          key={item.prefCode}
-        />
+        <li className="nav-item" key={i}>
+          <Prefecture
+            name={item.prefName}
+            value={item.prefCode}
+            key={item.prefCode}
+          />
+        </li>
       );
     });
 
     return (
-      <div className="prefectures mx-auto">
-        {prefectures}
-      </div>
+      <nav className="col-md-2 bg-light sidebar prefectures">
+        <div className="sidebar-sticky">
+          <ul className="prefectures__items nav flex-column">
+            {prefectures}
+          </ul>
+        </div>
+      </nav>
     );
   }
 }

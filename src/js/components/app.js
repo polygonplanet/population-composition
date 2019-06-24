@@ -18,8 +18,14 @@ export default class App extends React.Component {
     return (
       <div>
         <Header />
-        <Prefectures />
-        <Chart />
+        <div className="container-fluid">
+          <div className="row">
+            <Prefectures />
+            <main role="main" className="content col-md-9 ml-sm-auto col-lg-10 px-4">
+              <Chart />
+            </main>
+          </div>
+        </div>
       </div>
     );
   }
